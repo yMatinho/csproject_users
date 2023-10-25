@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Model;
+namespace App\Core\Model;
 
 use Framework\Model\Model;
 use Framework\DB\Table\Table;
 
-class Product extends Model {
+class User extends Model {
     public function __construct()
     {
         parent::__construct();
     }
 
     public static function init():void {
-        self::$table = new Table("products", ["title", "price", "description"]);
+        self::$table = new Table("users", ["username", "first_name", "last_name", "email", "password"]);
     }
 }
 
-Product::init();
+User::init();

@@ -2,4 +2,4 @@
 
 use Framework\Singleton\Router\Router;
 
-Router::get()->addGet("/", "App\Controller\SiteController@showHome", 'site.home');
+Router::get()->addGet("/user/find", "App\Modules\User\Controller\UserController@find", 'user.find');
