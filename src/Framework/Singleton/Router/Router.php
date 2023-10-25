@@ -4,6 +4,7 @@ namespace Framework\Singleton\Router;
 
 use Closure;
 use Exception;
+use Framework\Factory\ControllerFactory;
 use Framework\Singleton\Singleton;
 
 const ROUTE_NOT_FOUND_REDIRECT = 12;
@@ -14,9 +15,12 @@ class Router implements Singleton
     private static $instance;
     private array $routes;
 
+    private ControllerFactory $controllerFactory;
+
     public function __construct()
     {
         $this->createDefaultRoutes();
+        $this->controllerFactory = new ControllerFactory();
     }
 
     private function createDefaultRoutes()
@@ -154,9 +158,9 @@ class Router implements Singleton
 
     private function callRouteActionByParsingString(Route $route): void
     {
-        $controller = explode("@", $route->getAction())[0];
-        $method = explode("@", $route->getAction())[1];
+        $controller = $this->controllerFactory->makeFromString(explode("@", $route->getAction())[0]);
+        $methodName = explode("@", $route->getAction())[1];
 
-        echo call_user_func($controller . '::' . $method);
+        echo $controller->$methodName;
     }
 }
