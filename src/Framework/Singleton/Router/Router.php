@@ -161,6 +161,8 @@ class Router implements Singleton
         $controller = $this->controllerFactory->makeFromString(explode("@", $route->getAction())[0]);
         $methodName = explode("@", $route->getAction())[1];
 
-        echo $controller->$methodName();
+        $result = $controller->$methodName();
+
+        echo is_array($result) ? json_encode($result) : $result;
     }
 }
