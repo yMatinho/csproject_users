@@ -23,6 +23,13 @@ class Router implements Singleton
         $this->controllerFactory = new ControllerFactory();
     }
 
+    public static function get(): Router
+    {
+        if (self::$instance === null)
+            self::$instance = new Router();
+        return self::$instance;
+    }
+
     private function createDefaultRoutes()
     {
         $this->routes[] = new Route("error/404", HttpMethods::GET, HttpDefaultRouteNames::NOT_FOUND, function () {
@@ -34,12 +41,6 @@ class Router implements Singleton
         $this->routes[] = new Route("error/401", HttpMethods::GET, HttpDefaultRouteNames::UNAUTHORIZED, function () {
             return "401 Unauthorized";
         }, HttpDefaultCodes::UNAUTHORIZED);
-    }
-    public static function get(): Router
-    {
-        if (self::$instance === null)
-            self::$instance = new Router();
-        return self::$instance;
     }
 
     public function addGet(string $url, string|Closure $action, string $name, int $code = HttpDefaultCodes::SUCCESS): void
@@ -102,7 +103,7 @@ class Router implements Singleton
 
         return $paramsQuery;
     }
-    private function detectRouteByName(string $routeName): Route
+    public function detectRouteByName(string $routeName): Route
     {
         $routeFound = null;
         foreach (self::get()->routes as $route) {
@@ -117,7 +118,7 @@ class Router implements Singleton
         return $routeFound;
     }
 
-    private function detectRouteByUrl(string $routeUrl): Route
+    public function detectRouteByUrl(string $routeUrl): Route
     {
         $routeFound = null;
         foreach (self::get()->routes as $route) {
@@ -134,42 +135,5 @@ class Router implements Singleton
         }
 
         return $routeFound;
-    }
-
-    public function makeActionByUrl(string $url): void
-    {
-        try {
-            $route = self::get()->detectRouteByUrl($url);
-
-            if (is_callable($route->getAction())) {
-                echo $route->getAction()();
-                return;
-            }
-
-            self::get()->callRouteActionByParsingString($route);
-        } catch (Exception $e) {
-            if ($e->getCode() == ROUTE_NOT_FOUND_REDIRECT) {
-                self::get()->redirect(HttpDefaultRouteNames::NOT_FOUND);
-            } else {
-                echo $e->getMessage();
-            }
-        }
-    }
-
-    private function callRouteActionByParsingString(Route $route): void
-    {
-        try {
-            $controller = $this->controllerFactory->makeFromString(explode("@", $route->getAction())[0]);
-            $methodName = explode("@", $route->getAction())[1];
-            
-            $result = $controller->$methodName();
-            
-            echo is_array($result) ? json_encode($result) : $result;
-        } catch(Exception $e) {
-            if($controller->hasErrorHandler()) {
-                $treatedError = $controller->handleError($e);
-                echo is_array($treatedError) ? json_encode($treatedError) : $treatedError;
-            }
-        }
     }
 }
