@@ -28,9 +28,20 @@ abstract class Model
 
     public function __get($name)
     {
-        return $this->$name;
+        return $this->modelValues[$name];
     }
+    public static function fromData(array $data): Model
+    {
+        return self::fillModel(new static(), $data);
+    }
+    protected static function fillModel(Model $model, array $data): Model
+    {
+        foreach (self::$table->getCollumns() as $collumn) {
+            $model->$collumn = $data[$collumn];
+        }
 
+        return $model;
+    }
     public function save(): void
     {
         if (array_key_exists('id', $this->modelValues))
@@ -67,21 +78,21 @@ abstract class Model
         return MySQLDB::get()->rawFetchQuery($query, true);
     }
 
-    public static function first($fields = "*"): array
+    public static function first(string $fields = "*"): Model
     {
         $queryFactory = new MySQLQueryFactory(self::$table);
-
         $query = $queryFactory->select([], $fields, "id", "DESC", 1);
-        return MySQLDB::get()->rawFetchQuery($query);
+
+        return self::fromData(MySQLDB::get()->rawFetchQuery($query));
     }
 
-    public static function find($id): array
+    public static function find(int|string $id): Model
     {
-        return self::select([
+        return self::fromData(self::select([
             (new WhereClausure([
                 (new WhereComparison("id", "=", $id))
             ]))
-        ], "*", "", "", 1);
+        ], "*", "", "", 1));
     }
 
     public static function select(array $clausures, $fields = "*", $orderBy = "", $orderByOrder = "", $limit = ""): array

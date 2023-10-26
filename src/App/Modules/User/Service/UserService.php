@@ -13,7 +13,7 @@ class UserService {
         
     }
 
-    public function findById(string $id): array {
+    public function findById(string $id): User {
         $user = User::find($id);
         if(!$user) {
             throw new \Exception("Usuário não encontrado");
