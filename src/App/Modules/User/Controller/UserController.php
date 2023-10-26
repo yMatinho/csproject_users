@@ -2,6 +2,7 @@
 
 namespace App\Modules\User\Controller;
 
+use App\Core\ErrorHandler\JsonHandler;
 use App\Model\Contact;
 use App\Modules\User\Resource\Endpoint\FindResource;
 use App\Modules\User\Resource\UserResource;
@@ -21,6 +22,7 @@ class UserController extends Controller
         $this->userService = new UserService();
         $this->userResource = new UserResource();
         $this->findResource = new FindResource();
+        $this->errorHandler = new JsonHandler();
     }
 
     public function find()

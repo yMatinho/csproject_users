@@ -158,11 +158,18 @@ class Router implements Singleton
 
     private function callRouteActionByParsingString(Route $route): void
     {
-        $controller = $this->controllerFactory->makeFromString(explode("@", $route->getAction())[0]);
-        $methodName = explode("@", $route->getAction())[1];
-
-        $result = $controller->$methodName();
-
-        echo is_array($result) ? json_encode($result) : $result;
+        try {
+            $controller = $this->controllerFactory->makeFromString(explode("@", $route->getAction())[0]);
+            $methodName = explode("@", $route->getAction())[1];
+            
+            $result = $controller->$methodName();
+            
+            echo is_array($result) ? json_encode($result) : $result;
+        } catch(Exception $e) {
+            if($controller->hasErrorHandler()) {
+                $treatedError = $controller->handleError($e);
+                echo is_array($treatedError) ? json_encode($treatedError) : $treatedError;
+            }
+        }
     }
 }
