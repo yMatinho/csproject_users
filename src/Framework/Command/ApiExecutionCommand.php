@@ -3,7 +3,11 @@
 namespace Framework\Command;
 
 use Exception;
+use Framework\Controller\Controller;
+use Framework\Exception\HttpException;
 use Framework\Factory\ControllerFactory;
+use Framework\Singleton\Router\HttpDefaultCodes;
+use Framework\Singleton\Router\HttpDefaultHeaders;
 use Framework\Singleton\Router\HttpDefaultRouteNames;
 use Framework\Singleton\Router\Route;
 use Framework\Singleton\Router\Router;
@@ -11,7 +15,8 @@ use Framework\Singleton\Router\Router;
 class ApiExecutionCommand extends ExecutionCommand
 {
 
-    public function __construct(private readonly string $url) {
+    public function __construct(private readonly string $url)
+    {
         parent::__construct();
     }
 
@@ -47,13 +52,22 @@ class ApiExecutionCommand extends ExecutionCommand
 
             echo is_array($result) ? json_encode($result) : $result;
         } catch (Exception $e) {
-            $treatedError = $e->getMessage();
-            
-            if ($controller->hasErrorHandler()) {
-                $treatedError = $controller->handleError($e);
-            }
-
-            echo is_array($treatedError) ? json_encode($treatedError) : $treatedError;
+            header(HttpDefaultHeaders::getHeader(HttpDefaultCodes::BAD_REQUEST));
+            echo $this->treatedError($e, $controller);
+        } catch(HttpException $e) {
+            header(HttpDefaultHeaders::getHeader($e->getCode()));
+            echo $this->treatedError($e, $controller);
         }
+    }
+
+    private function treatedError(Exception $e, Controller $controller): string
+    {
+        $treatedError = $e->getMessage();
+
+        if ($controller->hasErrorHandler()) {
+            $treatedError = $controller->handleError($e);
+        }
+
+        return is_array($treatedError) ? json_encode($treatedError) : $treatedError;
     }
 }
