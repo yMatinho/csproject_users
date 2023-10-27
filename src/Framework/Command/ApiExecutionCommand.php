@@ -5,7 +5,9 @@ namespace Framework\Command;
 use Exception;
 use Framework\Controller\Controller;
 use Framework\Exception\HttpException;
+use Framework\Factory\ApiRequestFactory;
 use Framework\Factory\ControllerFactory;
+use Framework\Factory\RequestFactory;
 use Framework\Singleton\Router\HttpDefaultCodes;
 use Framework\Singleton\Router\HttpDefaultHeaders;
 use Framework\Singleton\Router\HttpDefaultRouteNames;
@@ -15,9 +17,12 @@ use Framework\Singleton\Router\Router;
 class ApiExecutionCommand extends ExecutionCommand
 {
 
+    private RequestFactory $apiRequestFactory;
+
     public function __construct(private readonly string $url)
     {
         parent::__construct();
+        $this->apiRequestFactory = new ApiRequestFactory();
     }
 
     public function execute(): void
@@ -47,8 +52,8 @@ class ApiExecutionCommand extends ExecutionCommand
         try {
             $controller = $this->controllerFactory->makeFromString(explode("@", $route->getAction())[0]);
             $methodName = explode("@", $route->getAction())[1];
-
-            $result = $controller->$methodName();
+            $request = $this->apiRequestFactory->make();
+            $result = $controller->$methodName($request);
 
             echo is_array($result) ? json_encode($result) : $result;
         } catch (Exception $e) {

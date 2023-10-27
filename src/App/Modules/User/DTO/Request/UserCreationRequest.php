@@ -2,6 +2,8 @@
 
 namespace App\Modules\User\DTO\Request;
 
+use Framework\Request\Request;
+
 class UserCreationRequest
 {
 
@@ -14,14 +16,14 @@ class UserCreationRequest
     ) {
     }
 
-    public static function fromArray(array $data): UserCreationRequest
+    public static function fromRequest(Request $data): UserCreationRequest
     {
         return new UserCreationRequest(
-            $data["username"],
-            $data["email"],
-            $data["password"],
-            $data["firstName"],
-            $data["lastName"]
+            $data->username,
+            $data->email,
+            $data->password,
+            $data->firstName,
+            $data->lastName
         );
     }
 
