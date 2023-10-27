@@ -3,10 +3,10 @@
 define("MAIN_DIR", __DIR__.'/');
 define("SITE_URL", "http://localhost:8080/");
 
-define("DB_DATABASE", "csproject");
+define("DB_DATABASE", "csproject_db");
 define("DB_USERNAME", "root");
-define("DB_PASSWORD", "");
-define("DB_HOST", "localhost");
+define("DB_PASSWORD", "secret");
+define("DB_HOST", "database");
 
 spl_autoload_register(function($class) {
     $class = str_replace("\\","/", $class);
