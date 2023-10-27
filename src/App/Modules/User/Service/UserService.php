@@ -19,7 +19,19 @@ class UserService {
         if($user->isEmpty()) {
             throw new HttpException("Usuário não encontrado");
         }
-        
+
+        return $user;
+    }
+
+    public function create(array $data): User {
+        $user = new User();
+        $user->username = $data["username"];
+        $user->first_name = $data["firstName"];
+        $user->last_name = $data["lastName"];
+        $user->email = $data["email"];
+        $user->password = md5($data["password"]);
+        $user->save();
+
         return $user;
     }
 }

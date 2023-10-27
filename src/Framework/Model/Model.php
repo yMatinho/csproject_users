@@ -34,6 +34,10 @@ abstract class Model
     {
         return self::fillModel(new static(), $data);
     }
+
+    public function toArray(): array {
+        return $this->modelValues;
+    }
     protected static function fillModel(Model $model, array $data): Model
     {
         foreach (self::$table->getCollumns() as $collumn) {

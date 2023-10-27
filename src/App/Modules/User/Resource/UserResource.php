@@ -14,7 +14,11 @@ class UserResource implements JsonResource
     public function exportFromArray(array $data): array
     {
         return [
-            "id"=> $data["id"],
+            "id"=> isset($data["id"]) ? $data["id"] : null,
+            "username"=> $data["username"],
+            "email"=> $data["email"],
+            "firstName"=> $data["first_name"],
+            "lastName"=> $data["last_name"],
         ];
     }
 }
