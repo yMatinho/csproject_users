@@ -39,7 +39,7 @@ class MySQLDB extends DB {
 
         $returnedData = $query->fetchAll();
         if(!$returnMany) {
-            return $returnedData[0];
+            return $returnedData ? $returnedData[0] : [];
         }
         return $returnedData;
     }

@@ -37,7 +37,9 @@ abstract class Model
     protected static function fillModel(Model $model, array $data): Model
     {
         foreach (self::$table->getCollumns() as $collumn) {
-            $model->$collumn = $data[$collumn];
+            if(isset($data[$collumn])) {
+                $model->$collumn = $data[$collumn];
+            }
         }
 
         return $model;
@@ -78,21 +80,33 @@ abstract class Model
         return MySQLDB::get()->rawFetchQuery($query, true);
     }
 
-    public static function first(string $fields = "*"): Model
+    public static function first(string $fields = "*", bool $throwNotFoundException=false): Model
     {
         $queryFactory = new MySQLQueryFactory(self::$table);
         $query = $queryFactory->select([], $fields, "id", "DESC", 1);
 
-        return self::fromData(MySQLDB::get()->rawFetchQuery($query));
+        $model = self::fromData(MySQLDB::get()->rawFetchQuery($query));
+
+        if($model->isEmpty() && $throwNotFoundException) {
+            throw new \Exception(sprintf("Model %s not found", static::class));
+        }
+
+        return $model;
     }
 
-    public static function find(int|string $id): Model
+    public static function find(int|string $id, bool $throwNotFoundException=false): Model
     {
-        return self::fromData(self::select([
+        $model = self::fromData(self::select([
             (new WhereClausure([
                 (new WhereComparison("id", "=", $id))
             ]))
         ], "*", "", "", 1));
+
+        if($model->isEmpty() && $throwNotFoundException) {
+            throw new \Exception(sprintf("Model %s not found", static::class));
+        }
+
+        return $model;
     }
 
     public static function select(array $clausures, $fields = "*", $orderBy = "", $orderByOrder = "", $limit = ""): array
@@ -100,6 +114,10 @@ abstract class Model
         $queryFactory = new MySQLQueryFactory(self::$table);
         $query = $queryFactory->select($clausures, $fields, $orderBy, $orderByOrder, $limit);
         return MySQLDB::get()->rawFetchQuery($query, ($limit > 1 || $limit == null));
+    }
+
+    public function isEmpty(): bool {
+        return empty($this->modelValues);
     }
 
     private function getValues($data): array

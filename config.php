@@ -6,6 +6,7 @@ define("SITE_URL", "http://localhost:8080/");
 define("DB_DATABASE", "csproject_db");
 define("DB_USERNAME", "root");
 define("DB_PASSWORD", "secret");
+define("DB_PORT", 3306);
 define("DB_HOST", "database");
 
 spl_autoload_register(function($class) {
