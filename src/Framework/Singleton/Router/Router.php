@@ -4,6 +4,7 @@ namespace Framework\Singleton\Router;
 
 use Closure;
 use Exception;
+use Framework\Exception\HttpException;
 use Framework\Factory\ControllerFactory;
 use Framework\Singleton\Singleton;
 
@@ -131,7 +132,7 @@ class Router implements Singleton
         }
 
         if (!$routeFound) {
-            throw new Exception("Router not found", ROUTE_NOT_FOUND_REDIRECT);
+            throw new HttpException("Route not found", HttpDefaultCodes::NOT_FOUND);
         }
 
         return $routeFound;

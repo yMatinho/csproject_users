@@ -1,5 +1,15 @@
 FROM php:8.1-fpm-alpine
 
+RUN apk add --no-cache \
+    nginx \
+    wget \
+    supervisor
+
+RUN mkdir -p /run/nginx
+
+COPY docker/nginx.conf /etc/nginx/nginx.conf
+COPY docker/supervisor.conf /etc/supervisor/conf.d/supervisor.conf
+
 RUN mkdir -p /var/www/html
 COPY . /var/www/html
 
@@ -11,4 +21,4 @@ RUN docker-php-ext-install mysqli pdo pdo_mysql
 
 RUN chown -R www-data:www-data /var/www
 
-CMD sh /var/www/html/docker/startup.sh
+CMD ["sh", "/var/www/html/docker/startup.sh"]

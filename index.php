@@ -6,6 +6,4 @@ use Framework\Singleton\Router\Router;
 include("config.php");
 include("routes.php");
 
-
-
 App::get()->executeApi();

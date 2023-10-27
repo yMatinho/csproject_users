@@ -2,7 +2,7 @@ version: "3.8"
 
 #Docker Networks
 networks:
-  doctoo-api:
+  csproject:
     driver: bridge
 
 #Volumes
@@ -24,9 +24,7 @@ services:
     depends_on:
       - database
     networks:
-      - doctoo-api
-    env_file:
-      - .env
+      - csproject
 
   database:
     image: percona:5.7
@@ -44,4 +42,4 @@ services:
     volumes:
       - dbdata:/var/lib/mysql/
     networks:
-      - doctoo-api
+      - csproject
