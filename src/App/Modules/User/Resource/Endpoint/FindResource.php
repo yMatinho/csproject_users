@@ -4,7 +4,7 @@ namespace App\Modules\User\Resource\Endpoint;
 
 use Framework\Response\JsonResource;
 
-class FindResource implements JsonResource
+class FindResource extends JsonResource
 {
 
     public function __construct()

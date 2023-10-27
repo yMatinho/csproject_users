@@ -2,6 +2,11 @@
 
 namespace Framework\Response;
 
-interface JsonResource {
-    public function exportFromArray(array $data): array;
+use Framework\Model\Model;
+
+abstract class JsonResource {
+    abstract public function exportFromArray(array $data): array;
+    public function exportFromModel(Model $model): array {
+        return $this->exportFromArray($model->toArray());
+    }
 }

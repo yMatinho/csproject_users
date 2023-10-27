@@ -4,7 +4,7 @@ namespace App\Modules\User\Resource;
 
 use Framework\Response\JsonResource;
 
-class UserResource implements JsonResource
+class UserResource extends JsonResource
 {
 
     public function __construct()

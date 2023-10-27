@@ -4,6 +4,7 @@ namespace App\Modules\User\Controller;
 
 use App\Core\ErrorHandler\JsonHandler;
 use App\Model\Contact;
+use App\Modules\User\DTO\Request\UserCreationRequest;
 use App\Modules\User\Resource\Endpoint\CreateResource;
 use App\Modules\User\Resource\Endpoint\FindResource;
 use App\Modules\User\Resource\UserResource;
@@ -31,15 +32,19 @@ class UserController extends Controller
 
     public function find()
     {
-        return $this->findResource->exportFromArray(["user" => $this->userService->findById(1)]);
+        return $this->findResource->exportFromArray([
+            "user" => $this->userResource->exportFromModel($this->userService->findById(1))
+        ]);
     }
 
     public function create()
     {
-        $createdUser = $this->userService->create(json_decode(file_get_contents('php://input'), true));
+        $createdUser = $this->userService->create(
+            UserCreationRequest::fromArray(json_decode(file_get_contents('php://input'), true))
+        );
 
         return $this->createResource->exportFromArray([
-            "user" => $this->userResource->exportFromArray($createdUser->toArray())
+            "user" => $this->userResource->exportFromModel($createdUser)
         ]);
     }
 }

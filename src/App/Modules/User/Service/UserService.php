@@ -4,6 +4,7 @@ namespace App\Modules\User\Service;
 
 use App\Model\Contact;
 use App\Core\Model\User;
+use App\Modules\User\DTO\Request\UserCreationRequest;
 use Framework\Exception\HttpException;
 use Framework\Singleton\Page\Page;
 use Framework\Singleton\Router\Router;
@@ -23,13 +24,13 @@ class UserService {
         return $user;
     }
 
-    public function create(array $data): User {
+    public function create(UserCreationRequest $dto): User {
         $user = new User();
-        $user->username = $data["username"];
-        $user->first_name = $data["firstName"];
-        $user->last_name = $data["lastName"];
-        $user->email = $data["email"];
-        $user->password = md5($data["password"]);
+        $user->username = $dto->getUsername();
+        $user->first_name = $dto->getFirstName();
+        $user->last_name = $dto->getLastName();
+        $user->email = $dto->getEmail();
+        $user->password = md5($dto->getPassword());
         $user->save();
 
         return $user;
