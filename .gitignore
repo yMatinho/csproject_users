@@ -2,3 +2,4 @@
 /vendor
 supervisord.log
 supervisord.pid
+.phpunit.result.cache
