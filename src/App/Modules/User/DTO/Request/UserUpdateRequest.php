@@ -18,7 +18,7 @@ class UserUpdateRequest
     public static function fromRequest(Request $data): UserUpdateRequest
     {
         return new UserUpdateRequest(
-            $data->userId,
+            $data->id,
             $data->password,
             $data->firstName,
             $data->lastName
