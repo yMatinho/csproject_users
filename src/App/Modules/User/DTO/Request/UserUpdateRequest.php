@@ -9,9 +9,9 @@ class UserUpdateRequest
 
     public function __construct(
         private int $userId,
-        private string $password,
-        private string $firstName,
-        private string $lastName
+        private ?string $password,
+        private ?string $firstName,
+        private ?string $lastName
     ) {
     }
 
@@ -29,16 +29,16 @@ class UserUpdateRequest
         return $this->userId;
     }
 
-    public function getPassword(): string
+    public function getPassword(): ?string
     {
         return $this->password;
     }
 
-    public function getFirstName(): string
+    public function getFirstName(): ?string
     {
         return $this->firstName;
     }
-    public function getLastName(): string
+    public function getLastName(): ?string
     {
         return $this->lastName;
     }
