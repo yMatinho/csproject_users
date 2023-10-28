@@ -2,6 +2,7 @@
 
 namespace Framework\Model;
 
+use Exception;
 use Framework\DB\DB;
 use Framework\DB\MySQLDB;
 use Framework\DB\Query\Clausure\WhereClausure;
@@ -62,29 +63,32 @@ abstract class Model
 
     protected function insert(): void
     {
-        $bruteInsertData = $this->getModelsReadyToBeQueried();
+        $bruteInsertData = $this->prepareValuesToSqlQuery();
         $queryFactory = new MySQLQueryFactory(self::$table);
         $query = $queryFactory->insert($this->getValues($bruteInsertData), $this->getCollumns($bruteInsertData));
+
         MySQLDB::get()->rawQuery($query);
     }
     protected function update(): void
     {
-        $bruteInsertData = $this->getModelsReadyToBeQueried();
+        $bruteUpdateData = $this->prepareValuesToSqlQuery();
         $queryFactory = new MySQLQueryFactory(self::$table);
-        $query = $queryFactory->update(["id" => $this->modelValues['id']], $this->getValues($bruteInsertData), $this->getCollumns($bruteInsertData));
+        $query = $queryFactory->update(["id" => $this->modelValues['id']], $this->getValues($bruteUpdateData), $this->getCollumns($bruteUpdateData));
+        
         MySQLDB::get()->rawQuery($query);
     }
     public static function delete(string|int $id): void
     {
         $queryFactory = new MySQLQueryFactory(self::$table);
         $query = $queryFactory->delete(["id" => $id]);
+        
         MySQLDB::get()->rawQuery($query);
     }
-    public static function all($fields = "*", $orderBy = "", $orderByOrder = "", $limit = ""): Collection
+    public static function all(string $fields = "*", string $orderBy = "", string $orderByOrder = "", ?int $limit = null): Collection
     {
         $queryFactory = new MySQLQueryFactory(self::$table);
-        $query = $queryFactory->select([], $fields, $orderBy, $orderByOrder, $limit);
-        
+        $query = $queryFactory->select([], $fields, $orderBy, $orderByOrder, (string)$limit ?: "");
+
         return (new CollectionFactory())->makeFromQueryResults(MySQLDB::get()->rawFetchQuery($query, true), static::class);
     }
 
@@ -92,7 +96,7 @@ abstract class Model
     {
         $queryFactory = new MySQLQueryFactory(self::$table);
         $query = $queryFactory->select([], $fields, "id", "DESC", 1);
-
+        
         $model = self::fromData(MySQLDB::get()->rawFetchQuery($query));
 
         if($model->isEmpty() && $throwNotFoundException) {
@@ -117,10 +121,11 @@ abstract class Model
         return $model;
     }
 
-    public static function select(array $clausures, $fields = "*", $orderBy = "", $orderByOrder = "", $limit = ""): array
+    private static function select(array $clausures, $fields = "*", $orderBy = "", $orderByOrder = "", $limit = ""): array
     {
         $queryFactory = new MySQLQueryFactory(self::$table);
         $query = $queryFactory->select($clausures, $fields, $orderBy, $orderByOrder, $limit);
+        
         return MySQLDB::get()->rawFetchQuery($query, ($limit > 1 || $limit == null));
     }
 
@@ -136,16 +141,13 @@ abstract class Model
     {
         return array_keys($data);
     }
-    private function getModelsReadyToBeQueried(): array
+    private function prepareValuesToSqlQuery(): array
     {
-        $arr = array_filter($this->modelValues, function ($key) {
-            if ($key == 'id')
-                return false;
-            return true;
-        }, ARRAY_FILTER_USE_KEY);
+        $filteredModelValues = $this->modelValues;
+        unset($filteredModelValues["id"]);
 
         return array_map(function ($value) {
             return ["value" => $value, "type" => gettype($value)];
-        }, $arr);
+        }, $filteredModelValues);
     }
 }

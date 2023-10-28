@@ -21,4 +21,4 @@ jobs:
       run: composer install --prefer-dist --no-progress
 
     - name: Execute unit tests
-      run: php vendor/bin/phpunit tests/Unit
+      run: php vendor/bin/phpunit --testsuit Unit
