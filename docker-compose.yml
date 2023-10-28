@@ -9,6 +9,8 @@ networks:
 volumes:
   dbdata:
     driver: local
+  api-data:
+    name: api-data
 
   # Workflow
 services:
@@ -20,7 +22,7 @@ services:
     ports:
       - 8080:80
     volumes:
-      - ./:/var/www/html
+      - api-data:/var/www/html
     depends_on:
       - database
     networks:
