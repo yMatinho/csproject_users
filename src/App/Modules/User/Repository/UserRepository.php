@@ -8,6 +8,7 @@ use App\Core\Model\User;
 use App\Modules\User\DTO\Request\UserCreationRequest;
 use App\Modules\User\DTO\Request\UserUpdateRequest;
 use Framework\Exception\HttpException;
+use Framework\Model\Collection;
 use Framework\Model\Model;
 use Framework\Singleton\Page\Page;
 use Framework\Singleton\Router\Router;
@@ -18,7 +19,7 @@ class UserRepository implements Repository
     {
     }
 
-    public function findAll(): array
+    public function findAll(): Collection
     {
         return User::all();
     }

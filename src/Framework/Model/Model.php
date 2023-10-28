@@ -8,6 +8,7 @@ use Framework\DB\Query\Clausure\WhereClausure;
 use Framework\DB\Query\Clausure\WhereComparison;
 use Framework\DB\Query\MySQLQueryFactory;
 use Framework\DB\Table\Table;
+use Framework\Factory\CollectionFactory;
 
 abstract class Model
 {
@@ -79,12 +80,12 @@ abstract class Model
         $query = $queryFactory->delete(["id" => $id]);
         MySQLDB::get()->rawQuery($query);
     }
-    public static function all($fields = "*", $orderBy = "", $orderByOrder = "", $limit = ""): array
+    public static function all($fields = "*", $orderBy = "", $orderByOrder = "", $limit = ""): Collection
     {
         $queryFactory = new MySQLQueryFactory(self::$table);
-
         $query = $queryFactory->select([], $fields, $orderBy, $orderByOrder, $limit);
-        return MySQLDB::get()->rawFetchQuery($query, true);
+        
+        return (new CollectionFactory())->makeFromQueryResults(MySQLDB::get()->rawFetchQuery($query, true), static::class);
     }
 
     public static function first(string $fields = "*", bool $throwNotFoundException=false): Model
