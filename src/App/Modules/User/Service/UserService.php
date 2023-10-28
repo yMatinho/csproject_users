@@ -39,4 +39,8 @@ class UserService
     {
         return $this->repository->update($this->findById($dto->getUserId()), $dto);
     }
+
+    public function delete(int $id): void {
+        $this->repository->delete($this->findById($id));
+    } 
 }
