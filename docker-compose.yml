@@ -27,7 +27,7 @@ services:
       - csproject
 
   database:
-    image: percona:5.7
+    image: mysql:5.7
     container_name: database
     platform: linux/amd64
     command: --init-file /database/init.sql
