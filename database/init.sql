@@ -12,7 +12,8 @@ CREATE TABLE IF NOT EXISTS `users` (
   `password` varchar(255) NOT NULL
 );
 
-ALTER TABLE `users` ADD PRIMARY KEY (`id`);
+ALTER TABLE `users` 
+ADD PRIMARY KEY (`id`);
 
 ALTER TABLE `users`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
