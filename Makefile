@@ -23,11 +23,13 @@ clean:
 	docker-compose -p csproject_users down --rmi local --volumes
 
 setup:
+	docker-compose -p csproject_users down
+	docker volume rm api-data
 	docker-compose -p csproject_users up -d --build
 	docker exec -it api composer install
 
 reset-setup:
-	docker-compose down -v
+	docker-compose -p csproject_users down --rmi local --volumes
 	docker-compose -p csproject_users up -d --build
 	docker exec -it api composer install
 

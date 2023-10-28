@@ -19,6 +19,8 @@ class UserResource extends JsonResource
             "email"=> $data["email"],
             "firstName"=> $data["first_name"],
             "lastName"=> $data["last_name"],
+            "createdAt"=> isset($data["created_at"]) ? $data["created_at"] : null,
+            "updatedAt"=> isset($data["updated_at"]) ? $data["updated_at"] : null,
         ];
     }
 }
