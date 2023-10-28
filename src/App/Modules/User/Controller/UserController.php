@@ -7,6 +7,7 @@ use App\Model\Contact;
 use App\Modules\User\DTO\Request\UserCreationRequest;
 use App\Modules\User\DTO\Request\UserUpdateRequest;
 use App\Modules\User\Resource\Endpoint\CreateResource;
+use App\Modules\User\Resource\Endpoint\DeleteResource;
 use App\Modules\User\Resource\Endpoint\FindResource;
 use App\Modules\User\Resource\Endpoint\UpdateResource;
 use App\Modules\User\Resource\UserResource;
@@ -24,6 +25,7 @@ class UserController extends Controller
     private readonly JsonResource $userResource;
     private readonly JsonResource $createResource;
     private readonly JsonResource $updateResource;
+    private readonly JsonResource $deleteResource;
     private readonly JsonResource $findResource;
     public function __construct()
     {
@@ -32,13 +34,14 @@ class UserController extends Controller
         $this->findResource = new FindResource();
         $this->createResource = new CreateResource();
         $this->updateResource = new UpdateResource();
+        $this->deleteResource = new DeleteResource();
         $this->errorHandler = new JsonHandler();
     }
 
     public function find(Request $request): array
     {
         return $this->findResource->exportFromArray([
-            "user" => $this->userResource->exportFromModel($this->userService->findById(1))
+            "user" => $this->userResource->exportFromModel($this->userService->findById($request->id))
         ]);
     }
 
@@ -62,5 +65,12 @@ class UserController extends Controller
         return $this->updateResource->exportFromArray([
             "user" => $this->userResource->exportFromModel($createdUser)
         ]);
+    }
+
+    public function delete(Request $request): array
+    {
+        $this->userService->delete($request->id);
+
+        return $this->deleteResource->exportFromArray(["message"=>"Deletado com sucesso"]);
     }
 }

@@ -73,7 +73,7 @@ class Router implements Singleton
                     "/",
                     SITE_URL . $this->detectRouteByName($routeName)->getUrl()
                 )
-            ) . $this->paramsQuery($params);
+            ) . $this->transformArrayIntoParamsQuery($params);
         } catch (Exception $e) {
             throw new Exception($e->getMessage(), ROUTE_NOT_FOUND_BUT_DISPLAY_THE_ERROR);
         }
@@ -83,7 +83,7 @@ class Router implements Singleton
     {
         $route = $this->detectRouteByName($routeName);
         header(sprintf("HTTP/1.1 %s", HttpDefaultHeaders::getHeader($route->getCode())));
-        header("Location: " . SITE_URL . $route->getUrl() . "") . $this->paramsQuery($params);
+        header("Location: " . SITE_URL . $route->getUrl() . "") . $this->transformArrayIntoParamsQuery($params);
     }
 
 
@@ -92,7 +92,7 @@ class Router implements Singleton
         return $_SERVER["REQUEST_METHOD"];
     }
 
-    private function paramsQuery(array $params): string
+    private function transformArrayIntoParamsQuery(array $params): string
     {
         $paramsQuery = "";
         if (!empty($params)) {
