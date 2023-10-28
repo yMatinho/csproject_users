@@ -8,6 +8,7 @@ use App\Modules\User\DTO\Request\UserCreationRequest;
 use App\Modules\User\DTO\Request\UserUpdateRequest;
 use App\Modules\User\Resource\Endpoint\CreateResource;
 use App\Modules\User\Resource\Endpoint\DeleteResource;
+use App\Modules\User\Resource\Endpoint\FindAllResource;
 use App\Modules\User\Resource\Endpoint\FindResource;
 use App\Modules\User\Resource\Endpoint\UpdateResource;
 use App\Modules\User\Resource\UserResource;
@@ -27,15 +28,24 @@ class UserController extends Controller
     private readonly JsonResource $updateResource;
     private readonly JsonResource $deleteResource;
     private readonly JsonResource $findResource;
+    private readonly JsonResource $findAllResource;
     public function __construct()
     {
         $this->userService = new UserService();
         $this->userResource = new UserResource();
         $this->findResource = new FindResource();
+        $this->findAllResource = new FindAllResource();
         $this->createResource = new CreateResource();
         $this->updateResource = new UpdateResource();
         $this->deleteResource = new DeleteResource();
         $this->errorHandler = new JsonHandler();
+    }
+
+    public function findAll(Request $request): array
+    {
+        return $this->findAllResource->exportFromArray([
+            "users" => $this->userResource->exportFromCollection($this->userService->findAll())
+        ]);
     }
 
     public function find(Request $request): array

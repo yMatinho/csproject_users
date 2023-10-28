@@ -9,6 +9,7 @@ use App\Modules\User\DTO\Request\UserCreationRequest;
 use App\Modules\User\DTO\Request\UserUpdateRequest;
 use App\Modules\User\Repository\UserRepository;
 use Framework\Exception\HttpException;
+use Framework\Model\Collection;
 use Framework\Singleton\Page\Page;
 use Framework\Singleton\Router\Router;
 
@@ -28,6 +29,11 @@ class UserService
         }
 
         return $user;
+    }
+
+    public function findAll(): Collection
+    {
+        return $this->repository->findAll();
     }
 
     public function create(UserCreationRequest $dto): User
