@@ -27,7 +27,7 @@ class App implements Singleton
 
     public function executeApi() {
         header("Content-Type: application/json");
-
+        
         $this->command = new ApiExecutionCommand($this->getBruteUrl());
         $this->command->execute();
     }
