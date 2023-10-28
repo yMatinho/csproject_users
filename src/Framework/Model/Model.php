@@ -40,7 +40,9 @@ abstract class Model
     }
     protected static function fillModel(Model $model, array $data): Model
     {
-        $model->id = $data["id"] ?: null;
+        if(isset($data["id"]))
+            $model->id = $data["id"];
+        
         foreach (self::$table->getCollumns() as $collumn) {
             if(isset($data[$collumn])) {
                 $model->$collumn = $data[$collumn];
