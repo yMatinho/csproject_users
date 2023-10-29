@@ -17,7 +17,7 @@ class WhereComparison {
     }
 
     public function get(bool $includeLogicalOperator=false) {
-        return ($includeLogicalOperator ? $this->logicalOperator." " : " ")."$this->collumn $this->operator $this->value";
+        return ($includeLogicalOperator ? $this->logicalOperator." " : " ")."`$this->collumn` $this->operator '$this->value'";
     }
     
 }

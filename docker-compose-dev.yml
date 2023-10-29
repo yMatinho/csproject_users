@@ -23,7 +23,7 @@ services:
     ports:
       - 8080:80
     volumes:
-      - users-api-data:/var/www/html
+      - .:/var/www/html
     depends_on:
       - users_database
     networks:

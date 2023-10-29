@@ -8,6 +8,7 @@ use App\Core\Repository\Repository;
 use App\Modules\User\DTO\Request\UserCreationRequest;
 use App\Modules\User\DTO\Request\UserUpdateRequest;
 use App\Modules\User\Repository\UserRepository;
+use Framework\DB\Query\Clausure\WhereComparison;
 use Framework\Exception\HttpException;
 use Framework\Model\Collection;
 use Framework\Singleton\Page\Page;
@@ -26,6 +27,20 @@ class UserService
         $user = $this->repository->findById($id);
         if ($user->isEmpty()) {
             throw new HttpException("Usuário não encontrado");
+        }
+
+        return $user;
+    }
+
+    public function findByCredentials(string $login, string $password): User
+    {
+        $user = $this->repository->findBy([
+            new WhereComparison("email", "=", $login),
+            new WhereComparison("password", "=", md5($password))
+        ]);
+
+        if ($user->isEmpty()) {
+            throw new HttpException("Login inválido");
         }
 
         return $user;
