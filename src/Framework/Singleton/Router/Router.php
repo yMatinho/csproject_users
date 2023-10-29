@@ -132,7 +132,7 @@ class Router implements Singleton
         }
 
         if (!$routeFound) {
-            throw new HttpException("Route not found", HttpDefaultCodes::NOT_FOUND);
+            throw new HttpException("Route not found ".$routeUrl, HttpDefaultCodes::NOT_FOUND);
         }
 
         return $routeFound;

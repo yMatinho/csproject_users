@@ -7,7 +7,7 @@ define("DB_DATABASE", "csproject_db");
 define("DB_USERNAME", "root");
 define("DB_PASSWORD", "secret");
 define("DB_PORT", 3306);
-define("DB_HOST", "database");
+define("DB_HOST", "users_database");
 
 spl_autoload_register(function($class) {
     $class = str_replace("\\","/", $class);

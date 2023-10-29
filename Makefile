@@ -9,6 +9,7 @@ export SHELLOPTS := $(if $(SHELLOPTS),$(SHELLOPTS):)errexit:pipefail
 # make docker use buildkit, and make docker-compose use docker cli, for support of multi-stage builds from Dockerfile
 export DOCKER_BUILDKIT=1
 export COMPOSE_DOCKER_CLI_BUILD=1
+NETWORK_NAME=csproject
 
 help:
 	@: noop to silence command echoing
@@ -22,14 +23,18 @@ help:
 clean:
 	docker-compose -p csproject_users down --rmi local --volumes
 
-setup:
-	docker-compose -p csproject_users up -d --build
-	docker exec -it api composer install
+check_network:
+	- docker network create --driver bridge $(NETWORK_NAME)
 
-reset-setup:
-	docker-compose down -v
-	docker-compose -p csproject_users up -d --build
-	docker exec -it api composer install
+setup-local: check_network
+	docker-compose -p csproject_users down --rmi local --volumes
+	docker-compose -f docker-compose-local.yml -p csproject_users up -d --build
+	docker exec -it users_api composer install
+
+setup-dev: check_network
+	docker-compose -p csproject_users down --rmi local --volumes
+	docker-compose -f docker-compose-dev.yml -p csproject_users up -d --build
+	docker exec -it users_api composer install
 
 unit-test-local:
 	php ./vendor/bin/phpunit --testsuit Unit

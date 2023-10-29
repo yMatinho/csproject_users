@@ -4,39 +4,40 @@ version: "3.8"
 networks:
   csproject:
     driver: bridge
+    external: true
 
 #Volumes
 volumes:
   dbdata:
     driver: local
-  api-data:
-    name: api-data
+  users-api-data:
+    name: users-api-data
 
   # Workflow
 services:
-  api:
+  users_api:
     build:
       context: .
       dockerfile: ./Dockerfile
-    container_name: api
+    container_name: users_api
     ports:
       - 8080:80
     volumes:
-      - api-data:/var/www/html
+      - users-api-data:/var/www/html
     depends_on:
-      - database
+      - users_database
     networks:
       - csproject
 
-  database:
+  users_database:
     image: mysql:5.7
-    container_name: database
+    container_name: users_database
     platform: linux/amd64
     command: --init-file /database/init.sql
     ports:
       - 3306:3306
     environment:
-      MYSQL_DATABASE: csproject_db
+      MYSQL_DATABASE: users_db
       MYSQL_USER: user
       MYSQL_PASSWORD: password
       MYSQL_ROOT_PASSWORD: secret
