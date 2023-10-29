@@ -33,10 +33,6 @@ class App implements Singleton
     }
 
     private function getBruteUrl() : string {
-        return str_replace(
-            str_replace(["/", "http:", "https:"], "", SITE_URL),
-            "",
-            str_replace(["/", "http:", "https:"], "", $_SERVER['HTTP_HOST'] . $_SERVER["REQUEST_URI"])
-        );
+        return str_replace(["/", "http:", "https:"], "", $_SERVER["REQUEST_URI"]);
     }
 }
