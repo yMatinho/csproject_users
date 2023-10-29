@@ -27,13 +27,11 @@ check_network:
 	- docker network create --driver bridge $(NETWORK_NAME)
 
 setup-local: check_network
-	docker network create csproject
 	docker-compose -p csproject_users down --rmi local --volumes
 	docker-compose -f docker-compose-local.yml -p csproject_users up -d --build
 	docker exec -it users_api composer install
 
 setup-dev: check_network
-	docker network create csproject
 	docker-compose -p csproject_users down --rmi local --volumes
 	docker-compose -f docker-compose-dev.yml -p csproject_users up -d --build
 	docker exec -it users_api composer install
