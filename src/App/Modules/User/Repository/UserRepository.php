@@ -29,6 +29,11 @@ class UserRepository implements Repository
         return User::find($id, $throwNotFoundException);
     }
 
+    public function findBy(array $comparisons, bool $throwNotFoundException = false): User
+    {
+        return User::findBy($comparisons, $throwNotFoundException);
+    }
+
     public function create(object $dto): User
     {
         $user = new User();

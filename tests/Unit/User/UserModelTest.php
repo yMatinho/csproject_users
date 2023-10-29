@@ -116,7 +116,7 @@ class UserModelTest extends TestCase
 
         $this->dbMock->shouldReceive("rawFetchQuery")->andReturn(USER_TEST_DATA);
         $this->dbMock->shouldHaveReceived('rawFetchQuery', [
-            "SELECT * FROM `users`  WHERE    id = " . USER_ID . "   LIMIT 1 ",
+            "SELECT * FROM `users`  WHERE    `id` = '" . USER_ID . "'   LIMIT 1 ",
             false
         ]);
 
@@ -129,7 +129,7 @@ class UserModelTest extends TestCase
 
         $this->dbMock->shouldReceive("rawFetchQuery")->andReturn([]);
         $this->dbMock->shouldHaveReceived('rawFetchQuery', [
-            "SELECT * FROM `users`  WHERE    id = " . INVALID_USER_ID . "   LIMIT 1 ",
+            "SELECT * FROM `users`  WHERE    `id` = '" . INVALID_USER_ID . "'   LIMIT 1 ",
             false
         ]);
 
@@ -144,7 +144,7 @@ class UserModelTest extends TestCase
 
             $this->dbMock->shouldReceive("rawFetchQuery")->andReturn([]);
             $this->dbMock->shouldHaveReceived('rawFetchQuery', [
-                "SELECT * FROM `users`  WHERE    id = " . INVALID_USER_ID . "   LIMIT 1 ",
+                "SELECT * FROM `users`  WHERE    `id` = '" . INVALID_USER_ID . "'   LIMIT 1 ",
                 false
             ]);
 
