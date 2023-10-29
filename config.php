@@ -1,5 +1,7 @@
 <?php
 
+require("vendor/autoload.php");
+
 define("MAIN_DIR", __DIR__.'/');
 define("SITE_URL", "http://localhost:8080/");
 
