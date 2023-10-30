@@ -39,9 +39,7 @@ class MySQLQueryFactory extends QueryFactory
         $values = array_map(function ($collumn, $value) {
             if ($value == null)
                 return;
-            if ($value['type'] == "string")
-                return "$collumn='" . $value["value"] . "'";
-            return $value['value'];
+            return "$collumn='" . $value["value"] . "'";
         }, $collumns, $values);
         $identificatorQuery = array_keys($idAndValue)[0] . ' = ' . $idAndValue[array_keys($idAndValue)[0]];
         return "UPDATE `" . $this->table->getTable() . "` SET " . (implode(',', $values)) . " WHERE $identificatorQuery";
