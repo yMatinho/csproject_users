@@ -121,6 +121,20 @@ abstract class Model
         return $model;
     }
 
+    public static function findBy(array $comparisons, bool $throwNotFoundException=false): Model
+    {
+        $model = self::fromData(
+            self::select([
+            (new WhereClausure($comparisons))
+        ], "*", "", "", 1));
+
+        if($model->isEmpty() && $throwNotFoundException) {
+            throw new \Exception(sprintf("Model %s not found", static::class));
+        }
+
+        return $model;
+    }
+
     private static function select(array $clausures, $fields = "*", $orderBy = "", $orderByOrder = "", $limit = ""): array
     {
         $queryFactory = new MySQLQueryFactory(self::$table);

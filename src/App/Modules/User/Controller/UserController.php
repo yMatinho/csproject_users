@@ -55,6 +55,16 @@ class UserController extends Controller
         ]);
     }
 
+    public function findByCredentials(Request $request): array
+    {
+        return $this->findResource->exportFromArray([
+            "user" => $this->userResource->exportFromModel($this->userService->findByCredentials(
+                $request->login,
+                $request->password
+            ))
+        ]);
+    }
+
     public function create(Request $request): array
     {
         $createdUser = $this->userService->create(
@@ -81,6 +91,6 @@ class UserController extends Controller
     {
         $this->userService->delete($request->id);
 
-        return $this->deleteResource->exportFromArray(["message"=>"Deletado com sucesso"]);
+        return $this->deleteResource->exportFromArray(["message" => "Deletado com sucesso"]);
     }
 }
