@@ -14,9 +14,9 @@ class EmailVerification extends Model
     }
 
     public function getUser(): User {
-        return $this->user ?: User::find($this->user_id);
+        return empty($this->user) ? User::find($this->user_id) : $this->user;
     }
-    
+
     public static function init(): void
     {
         static::$table = new Table("email_verifications", [

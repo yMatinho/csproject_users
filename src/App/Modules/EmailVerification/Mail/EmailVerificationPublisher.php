@@ -27,11 +27,10 @@ class EmailVerificationPublisher {
     {
         $this->notificationMessageBrokerFacade->dispatchEmail(
             $emailVerification->getUser()->email,
-            "CSProject - Verifique seu email",
+            "CSProject - Email verificado com sucesso!",
             sprintf(
-                "Olá, %s! Por favor, clique no link abaixo para verificar seu email: <br><br><br>%s",
-                $emailVerification->getUser()->first_name,
-                sprintf("%s/verify-email/%s", FRONT_URL, $emailVerification->token)
+                "Olá, %s! Você verificou seu email com sucesso e já pode acessar a plataforma!",
+                $emailVerification->getUser()->first_name
             )
         );
     }

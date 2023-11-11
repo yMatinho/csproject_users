@@ -33,16 +33,11 @@ class EmailVerificationService
 
     public function verify(string $token): void
     {
-        $emailVerification = $this->repository->findBy([
-            new WhereComparison("token", "=", $token)
-        ]);
-
-        if (!$emailVerification)
-            throw new \Exception("Token inválido!");
-
+        $emailVerification = $this->findByToken($token);
         $this->repository->update($emailVerification, (object)[
             "accepted_at" => date("Y-m-d H:i:s")
         ]);
+        $this->emailVerificationPublisher->publishEmailVerifiedSuccessfully($emailVerification);
     }
 
     public function send(string $email): EmailVerification
@@ -69,6 +64,18 @@ class EmailVerificationService
             "token" => $token
         ]);
         $emailVerification->user = $user;
+
+        return $emailVerification;
+    }
+
+    public function findByToken(string $token): EmailVerification {
+        $emailVerification = $this->repository->findBy([
+            new WhereComparison("token", "=", $token),
+            new WhereComparison("accepted_at", "=", "NULL")
+        ]);
+
+        if ($emailVerification->isEmpty())
+            throw new \Exception("Token inválido!");
 
         return $emailVerification;
     }
