@@ -21,6 +21,17 @@ class UserService
     {
         $this->repository = new UserRepository();
     }
+    public function findByEmail(string $email): User
+    {
+        $user = $this->repository->findBy([
+            new WhereComparison("email", "=", $email)
+        ]);
+        if ($user->isEmpty()) {
+            throw new HttpException("Usuário não encontrado");
+        }
+
+        return $user;
+    }
 
     public function findById(string $id): User
     {

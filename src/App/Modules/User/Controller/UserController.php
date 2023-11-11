@@ -4,6 +4,7 @@ namespace App\Modules\User\Controller;
 
 use App\Core\ErrorHandler\JsonHandler;
 use App\Model\Contact;
+use App\Modules\EmailVerification\Service\EmailVerificationService;
 use App\Modules\User\DTO\Request\UserCreationRequest;
 use App\Modules\User\DTO\Request\UserUpdateRequest;
 use App\Modules\User\Resource\Endpoint\CreateResource;
@@ -23,6 +24,7 @@ class UserController extends Controller
 {
 
     private readonly UserService $userService;
+    private readonly EmailVerificationService $emailVerificationService;
     private readonly JsonResource $userResource;
     private readonly JsonResource $createResource;
     private readonly JsonResource $updateResource;
@@ -32,6 +34,7 @@ class UserController extends Controller
     public function __construct()
     {
         $this->userService = new UserService();
+        $this->emailVerificationService = new EmailVerificationService();
         $this->userResource = new UserResource();
         $this->findResource = new FindResource();
         $this->findAllResource = new FindAllResource();
@@ -70,6 +73,7 @@ class UserController extends Controller
         $createdUser = $this->userService->create(
             UserCreationRequest::fromRequest($request)
         );
+        $this->emailVerificationService->sendFromUser($createdUser);
 
         return $this->createResource->exportFromArray([
             "user" => $this->userResource->exportFromModel($createdUser)
