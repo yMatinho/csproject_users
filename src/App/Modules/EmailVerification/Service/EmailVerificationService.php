@@ -37,6 +37,7 @@ class EmailVerificationService
         $this->repository->update($emailVerification, (object)[
             "accepted_at" => date("Y-m-d H:i:s")
         ]);
+        $this->userService->verify($emailVerification->user_id);
         $this->emailVerificationPublisher->publishEmailVerifiedSuccessfully($emailVerification);
     }
 
@@ -71,7 +72,7 @@ class EmailVerificationService
     public function findByToken(string $token): EmailVerification {
         $emailVerification = $this->repository->findBy([
             new WhereComparison("token", "=", $token),
-            new WhereComparison("accepted_at", "=", "NULL")
+            new WhereComparison("accepted_at", "IS", "NULL")
         ]);
 
         if ($emailVerification->isEmpty())

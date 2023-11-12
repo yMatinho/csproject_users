@@ -37,11 +37,11 @@ class UserRepository implements Repository
     public function create(object $dto): User
     {
         $user = new User();
-        $user->username = $dto->getUsername();
-        $user->first_name = $dto->getFirstName();
-        $user->last_name = $dto->getLastName();
-        $user->email = $dto->getEmail();
-        $user->password = md5($dto->getPassword());
+        $user->username = $dto->username;
+        $user->first_name = $dto->first_name;
+        $user->last_name = $dto->last_name;
+        $user->email = $dto->email;
+        $user->password = md5($dto->password);
         $user->save();
 
         return $user;
@@ -49,9 +49,10 @@ class UserRepository implements Repository
 
     public function update(Model $user, object $dto): User
     {
-        $user->first_name = $dto->getFirstName() ?: $user->first_name;
-        $user->last_name = $dto->getLastName() ?: $user->last_name;
-        $user->password = $dto->getPassword() ? md5($dto->getPassword()) : $user->password;
+        $user->first_name = isset($dto->first_name) ? $dto->first_name : $user->first_name;
+        $user->last_name = isset($dto->last_name) ? $dto->last_name : $user->last_name;
+        $user->verified_at = isset($dto->verified_at) ? $dto->verified_at : $user->verified_at;
+        $user->password = isset($dto->password) ? md5($dto->password) : $user->password;
         $user->save();
 
         return $user;
