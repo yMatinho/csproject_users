@@ -3,8 +3,8 @@
 require("vendor/autoload.php");
 
 define("MAIN_DIR", __DIR__.'/');
-define("SITE_URL", "http://localhost:8080/");
-define("FRONT_URL", "http://localhost:8084/");
+define("SITE_URL", "http://localhost:8080");
+define("FRONT_URL", "http://localhost:8084");
 
 define("DB_DATABASE", "users_db");
 define("DB_USERNAME", "root");
