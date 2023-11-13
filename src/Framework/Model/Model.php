@@ -45,7 +45,7 @@ abstract class Model
         if(isset($data["id"]))
             $model->id = $data["id"];
         
-        foreach (self::$table->getCollumns() as $collumn) {
+        foreach (static::$table->getCollumns() as $collumn) {
             if(isset($data[$collumn])) {
                 $model->$collumn = $data[$collumn];
             }
@@ -64,29 +64,29 @@ abstract class Model
     protected function insert(): void
     {
         $bruteInsertData = $this->prepareValuesToSqlQuery();
-        $queryFactory = new MySQLQueryFactory(self::$table);
+        $queryFactory = new MySQLQueryFactory(static::$table);
         $query = $queryFactory->insert($this->getValues($bruteInsertData), $this->getCollumns($bruteInsertData));
-
-        MySQLDB::get()->rawQuery($query);
+        
+        $this->modelValues["id"] = MySQLDB::get()->rawQueryReturningLastId($query);
     }
     protected function update(): void
     {
         $bruteUpdateData = $this->prepareValuesToSqlQuery();
-        $queryFactory = new MySQLQueryFactory(self::$table);
+        $queryFactory = new MySQLQueryFactory(static::$table);
         $query = $queryFactory->update(["id" => $this->modelValues['id']], $this->getValues($bruteUpdateData), $this->getCollumns($bruteUpdateData));
         
         MySQLDB::get()->rawQuery($query);
     }
     public static function delete(string|int $id): void
     {
-        $queryFactory = new MySQLQueryFactory(self::$table);
+        $queryFactory = new MySQLQueryFactory(static::$table);
         $query = $queryFactory->delete(["id" => $id]);
         
         MySQLDB::get()->rawQuery($query);
     }
     public static function all(string $fields = "*", string $orderBy = "", string $orderByOrder = "", ?int $limit = null): Collection
     {
-        $queryFactory = new MySQLQueryFactory(self::$table);
+        $queryFactory = new MySQLQueryFactory(static::$table);
         $query = $queryFactory->select([], $fields, $orderBy, $orderByOrder, (string)$limit ?: "");
 
         return (new CollectionFactory())->makeFromQueryResults(MySQLDB::get()->rawFetchQuery($query, true), static::class);
@@ -94,7 +94,7 @@ abstract class Model
 
     public static function first(string $fields = "*", bool $throwNotFoundException=false): Model
     {
-        $queryFactory = new MySQLQueryFactory(self::$table);
+        $queryFactory = new MySQLQueryFactory(static::$table);
         $query = $queryFactory->select([], $fields, "id", "DESC", 1);
         
         $model = self::fromData(MySQLDB::get()->rawFetchQuery($query));
@@ -137,7 +137,7 @@ abstract class Model
 
     private static function select(array $clausures, $fields = "*", $orderBy = "", $orderByOrder = "", $limit = ""): array
     {
-        $queryFactory = new MySQLQueryFactory(self::$table);
+        $queryFactory = new MySQLQueryFactory(static::$table);
         $query = $queryFactory->select($clausures, $fields, $orderBy, $orderByOrder, $limit);
         
         return MySQLDB::get()->rawFetchQuery($query, ($limit > 1 || $limit == null));

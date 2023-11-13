@@ -21,6 +21,17 @@ class UserService
     {
         $this->repository = new UserRepository();
     }
+    public function findByEmail(string $email): User
+    {
+        $user = $this->repository->findBy([
+            new WhereComparison("email", "=", $email)
+        ]);
+        if ($user->isEmpty()) {
+            throw new HttpException("Usuário não encontrado");
+        }
+
+        return $user;
+    }
 
     public function findById(string $id): User
     {
@@ -36,14 +47,20 @@ class UserService
     {
         $user = $this->repository->findBy([
             new WhereComparison("email", "=", $login),
-            new WhereComparison("password", "=", md5($password))
+            new WhereComparison("password", "=", md5($password)),
         ]);
+        $this->verifyFoundUser($user);
 
+        return $user;
+    }
+
+    private function verifyFoundUser(User $user) {
         if ($user->isEmpty()) {
             throw new HttpException("Login inválido");
         }
-
-        return $user;
+        if(!$user->isVerified()) {
+            throw new HttpException("Verifique seu email para continuar");
+        }
     }
 
     public function findAll(): Collection
@@ -53,15 +70,24 @@ class UserService
 
     public function create(UserCreationRequest $dto): User
     {
-        return $this->repository->create($dto);
+        return $this->repository->create($dto->toQueryFormat());
     }
 
     public function update(UserUpdateRequest $dto): User
     {
-        return $this->repository->update($this->findById($dto->getUserId()), $dto);
+        return $this->repository->update($this->findById($dto->getUserId()), $dto->toQueryFormat());
     }
 
-    public function delete(int $id): void {
+    public function delete(int $id): void
+    {
         $this->repository->delete($this->findById($id));
-    } 
+    }
+
+    public function verify(int $id): void
+    {
+        $user = $this->findById($id);
+        $this->repository->update($user, (object)[
+            "verified_at" => date("Y-m-d H:i:s")
+        ]);
+    }
 }
