@@ -27,6 +27,16 @@ class UserCreationRequest
         );
     }
 
+    public function toQueryFormat(): object {
+        return (object)[
+            "username"=> $this->username,
+            "email"=> $this->email,
+            "password"=> $this->password,
+            "first_name"=> $this->firstName,
+            "last_name"=> $this->lastName
+        ];
+    }
+
     public function getUsername(): string
     {
         return $this->username;

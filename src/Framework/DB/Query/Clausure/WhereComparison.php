@@ -2,13 +2,14 @@
 
 namespace Framework\DB\Query\Clausure;
 
-class WhereComparison {
+class WhereComparison
+{
     private string $operator;
     private string $collumn;
     private string $value;
     private string $logicalOperator;
 
-    public function __construct(string $collumn, string $operator, string $value, string $logicalOperator="AND")
+    public function __construct(string $collumn, string $operator, string $value, string $logicalOperator = "AND")
     {
         $this->operator = $operator;
         $this->collumn = $collumn;
@@ -16,8 +17,10 @@ class WhereComparison {
         $this->logicalOperator = $logicalOperator;
     }
 
-    public function get(bool $includeLogicalOperator=false) {
-        return ($includeLogicalOperator ? $this->logicalOperator." " : " ")."`$this->collumn` $this->operator '$this->value'";
+    public function get(bool $includeLogicalOperator = false)
+    {
+        return ($includeLogicalOperator ? $this->logicalOperator . " " : " ") .
+            "`$this->collumn` $this->operator " .
+            (strtolower($this->value) != "null" ? "'$this->value'" : $this->value);
     }
-    
 }

@@ -25,6 +25,14 @@ class UserUpdateRequest
         );
     }
 
+    public function toQueryFormat(): object {
+        return (object)[
+            "password"=> $this->password,
+            "first_name"=> $this->firstName,
+            "last_name"=> $this->lastName
+        ];
+    }
+
     public function getUserId(): int {
         return $this->userId;
     }

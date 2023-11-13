@@ -54,6 +54,7 @@ class UserModelTest extends TestCase
 
         $this->dbMock->shouldReceive('get')->andReturn($this->dbMock);
         $this->dbMock->shouldReceive('rawFetchQuery')->andReturn([USER_TEST_DATA, USER_TEST_DATA, USER_TEST_DATA]);
+        $this->dbMock->shouldReceive('rawQueryReturningLastId')->andReturn();
         $this->dbMock->shouldReceive('rawQuery')->andReturn();
     }
     public function testFromData()
@@ -169,7 +170,7 @@ class UserModelTest extends TestCase
         $modelToBeCreated->save();
 
         $this->dbMock->shouldHaveReceived(
-            'rawQuery',
+            'rawQueryReturningLastId',
             [
                 sprintf(
                     "INSERT INTO users(username, first_name, last_name, email, password) VALUES('%s', '%s', '%s', '%s', '%s')",
